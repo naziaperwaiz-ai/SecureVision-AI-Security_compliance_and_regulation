@@ -12,6 +12,7 @@ Capture loop.
 
 import time
 import collections
+import threading
 import cv2
 
 from core.motion_router import MotionRouter
@@ -20,19 +21,19 @@ from config.camera_config import get_motion_threshold
 
 
 class CaptureSession:
-    def __init__(self, cfg: dict, on_clip_ready=None, on_frame=None):
+    def __init__(self, cfg: dict, on_clip_ready=None, on_frame=None, on_hazard_check=None, hazard_check_interval=15.0):
         """
-        cfg: camera config dict (see config/camera_config.py)
-        on_clip_ready: callback(frames: list[np.ndarray], meta: dict) called
-                       once a clip finishes recording.
-        on_frame: optional callback(frame, significant_contours, is_recording) called
-                  every single frame — used for live preview/debugging. Should
-                  return False to request the loop stop (e.g. user pressed 'q'),
-                  anything else (including None) continues normally.
+        on_hazard_check: optional callback(frame) called on a fixed timer,
+                  COMPLETELY INDEPENDENT of motion detection or recording
+                  state — hazard checking no longer waits for motion.
+        hazard_check_interval: seconds between hazard checks (default 15).
         """
         self.cfg = cfg
         self.on_clip_ready = on_clip_ready or (lambda frames, meta: None)
         self.on_frame = on_frame
+        self.on_hazard_check = on_hazard_check
+        self.hazard_check_interval = hazard_check_interval
+        self._last_hazard_check_time = 0.0
 
         self.motion_threshold = get_motion_threshold(cfg)
         self.cooldown = cfg.get("cooldown_seconds", 2.5)
@@ -81,6 +82,7 @@ class CaptureSession:
         fgmask = self.bg_subtractor.apply(frame)
         fgmask = cv2.medianBlur(fgmask, 5)
         fgmask = self.router.apply_ignore_mask(fgmask)
+        fgmask = self.router.apply_detection_zone_mask(fgmask)
         _, thresh = cv2.threshold(fgmask, 200, 255, cv2.THRESH_BINARY)
         contours, _ = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         significant = [c for c in contours if cv2.contourArea(c) >= self.motion_threshold]
@@ -102,7 +104,14 @@ class CaptureSession:
             "mode": mode,  # 'ai_mode' or 'cctv_mode'
             "timestamp": self.clip_start_time,
         }
-        self.on_clip_ready(self.clip_frames, meta)
+        # Run in a background thread - this callback runs the identity
+        # model (and possibly enhancement), which can take real time.
+        # Blocking here would freeze frame capture right as a new clip
+        # might need to start, causing exactly the watch->record hang.
+        frames_to_process = self.clip_frames
+        threading.Thread(
+            target=self.on_clip_ready, args=(frames_to_process, meta), daemon=True
+        ).start()
         self.recording = False
         self.clip_frames = []
 
@@ -130,6 +139,18 @@ class CaptureSession:
             mode = get_current_mode(self.cfg)
             significant_contours, all_contours = self._detect_motion(frame)
             motion_now = len(significant_contours) > 0
+
+            if self.on_hazard_check is not None:
+                now = time.time()
+                if now - self._last_hazard_check_time >= self.hazard_check_interval:
+                    self._last_hazard_check_time = now
+                    # Run in a background thread - YOLO inference here can
+                    # take hundreds of ms to seconds, and blocking the main
+                    # loop for that long freezes frame reading AND the
+                    # watch->record transition.
+                    threading.Thread(
+                        target=self.on_hazard_check, args=(frame.copy(),), daemon=True
+                    ).start()
 
             if not self.recording:
                 self._push_prebuffer(frame)

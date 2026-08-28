@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AI-Powered Security Pipeline Dashboard — Real-time surveillance monitoring with face recognition, hazard detection, and smart alerts.">
+    <title>SecureVision AI — Security Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- ========== SIDEBAR NAVIGATION ========== -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <div class="logo-icon">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                        <circle cx="12" cy="11" r="3"/>
+                    </svg>
+                </div>
+                <div class="logo-text">
+                    <span class="logo-title">SecureVision</span>
+                    <span class="logo-subtitle">AI Pipeline</span>
+                </div>
+            </div>
+            <button class="sidebar-toggle" id="sidebarToggle" title="Toggle sidebar">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/>
+                </svg>
+            </button>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="#" class="nav-item active" data-section="dashboard">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+                </svg>
+                <span class="nav-label">Dashboard</span>
+            </a>
+            <a href="#" class="nav-item" data-section="monitoring">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+                </svg>
+                <span class="nav-label">Live Monitoring</span>
+            </a>
+            <a href="#" class="nav-item" data-section="enrollment">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><line x1="16" y1="3" x2="22" y2="3"/><line x1="19" y1="0" x2="19" y2="6"/>
+                </svg>
+                <span class="nav-label">Face Enrollment</span>
+                <span class="nav-badge">NEW</span>
+            </a>
+            <a href="#" class="nav-item" data-section="alerts">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                </svg>
+                <span class="nav-label">Alerts & Events</span>
+                <span class="nav-badge alert-badge" id="alertCount">0</span>
+            </a>
+            <a href="#" class="nav-item" data-section="cameras">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/>
+                </svg>
+                <span class="nav-label">Cameras</span>
+            </a>
+            <a href="#" class="nav-item" data-section="schedule">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+                </svg>
+                <span class="nav-label">Schedule</span>
+            </a>
+            <a href="#" class="nav-item" data-section="settings">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                </svg>
+                <span class="nav-label">Settings</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="system-status">
+                <div class="status-indicator online" id="systemStatusDot"></div>
+                <span class="status-text" id="systemStatusText">System Online</span>
+            </div>
+            <div class="sidebar-mode-badge" id="sidebarModeBadge">
+                <span class="mode-dot"></span>
+                <span id="sidebarModeText">AI Mode</span>
+            </div>
+        </div>
+    </aside>
+
+    <!-- ========== MAIN CONTENT ========== -->
+    <main class="main-content" id="mainContent">
+        <!-- Top Header Bar -->
+        <header class="top-header">
+            <div class="header-left">
+                <button class="mobile-menu-btn" id="mobileMenuBtn">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/>
+                    </svg>
+                </button>
+                <h1 class="page-title" id="pageTitle">Dashboard Overview</h1>
+            </div>
+            <div class="header-right">
+                <div class="header-search">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                    </svg>
+                    <input type="text" placeholder="Search events..." id="searchInput">
+                </div>
+                <button class="header-btn notification-btn" id="notificationBtn" title="Notifications">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                    </svg>
+                    <span class="notification-dot" id="notificationDot"></span>
+                </button>
+                <div class="header-time" id="headerTime">--:--:--</div>
+            </div>
+        </header>
+
+        <!-- ===== SECTION: DASHBOARD ===== -->
+        <section class="content-section active" id="section-dashboard">
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon cyan">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/>
+                        </svg>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-number" id="statCameras">1</span>
+                        <span class="stat-label">Active Cameras</span>
+                    </div>
+                    <div class="stat-trend up">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg>
+                        <span>Online</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon red">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                        </svg>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-number" id="statAlerts">0</span>
+                        <span class="stat-label">Alerts Today</span>
+                    </div>
+                    <div class="stat-trend neutral">
+                        <span>No threats</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon green">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+                        </svg>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-number" id="statFaces">0</span>
+                        <span class="stat-label">Enrolled Faces</span>
+                    </div>
+                    <div class="stat-trend up">
+                        <span>Database</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon purple">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                        </svg>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-number" id="statMode">AI Mode</span>
+                        <span class="stat-label">Current Mode</span>
+                    </div>
+                    <div class="stat-trend up">
+                        <span>Active</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Content Grid -->
+            <div class="dashboard-grid">
+                <!-- Recent Events -->
+                <div class="glass-card event-feed-card">
+                    <div class="card-header">
+                        <h2>Recent Events</h2>
+                        <button class="btn-ghost btn-sm" onclick="App.navigateTo('alerts')">View All</button>
+                    </div>
+                    <div class="event-feed" id="dashboardEventFeed">
+                        <div class="empty-state">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+                                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                            </svg>
+                            <p>No events recorded yet</p>
+                            <span>Events will appear here in real-time</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- System Health -->
+                <div class="glass-card system-health-card">
+                    <div class="card-header">
+                        <h2>System Health</h2>
+                        <span class="status-badge online" id="healthBadge">Operational</span>
+                    </div>
+                    <div class="health-items">
+                        <div class="health-item">
+                            <div class="health-label">
+                                <span class="health-dot online"></span>
+                                <span>Motion Detection</span>
+                            </div>
+                            <span class="health-value">Active</span>
+                        </div>
+                        <div class="health-item">
+                            <div class="health-label">
+                                <span class="health-dot online"></span>
+                                <span>Person Detection (YOLOv8)</span>
+                            </div>
+                            <span class="health-value">Loaded</span>
+                        </div>
+                        <div class="health-item">
+                            <div class="health-label">
+                                <span class="health-dot online"></span>
+                                <span>Face Recognition (ArcFace)</span>
+                            </div>
+                            <span class="health-value">Ready</span>
+                        </div>
+                        <div class="health-item">
+                            <div class="health-label">
+                                <span class="health-dot online"></span>
+                                <span>Hazard Detection</span>
+                            </div>
+                            <span class="health-value">2s Interval</span>
+                        </div>
+                        <div class="health-item">
+                            <div class="health-label">
+                                <span class="health-dot online"></span>
+                                <span>Low-Light Enhancer (Zero-DCE++)</span>
+                            </div>
+                            <span class="health-value">Standby</span>
+                        </div>
+                        <div class="health-item">
+                            <div class="health-label">
+                                <span class="health-dot" id="apiStatusDot"></span>
+                                <span>API Server</span>
+                            </div>
+                            <span class="health-value" id="apiStatusText">Checking...</span>
+                        </div>
+                    </div>
+                    <div class="uptime-display">
+                        <span class="uptime-label">Uptime</span>
+                        <span class="uptime-value" id="uptimeValue">--:--:--</span>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="glass-card quick-actions-card">
+                    <div class="card-header">
+                        <h2>Quick Actions</h2>
+                    </div>
+                    <div class="quick-actions">
+                        <button class="action-btn" onclick="App.navigateTo('enrollment')">
+                            <div class="action-icon cyan">
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><line x1="16" y1="3" x2="22" y2="3"/><line x1="19" y1="0" x2="19" y2="6"/>
+                                </svg>
+                            </div>
+                            <span>Enroll Face</span>
+                        </button>
+                        <button class="action-btn" onclick="App.navigateTo('cameras')">
+                            <div class="action-icon purple">
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/>
+                                </svg>
+                            </div>
+                            <span>Add Camera</span>
+                        </button>
+                        <button class="action-btn" onclick="App.navigateTo('schedule')">
+                            <div class="action-icon amber">
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+                                </svg>
+                            </div>
+                            <span>Edit Schedule</span>
+                        </button>
+                        <button class="action-btn" onclick="App.exportEvents()">
+                            <div class="action-icon green">
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+                                </svg>
+                            </div>
+                            <span>Export Log</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== SECTION: LIVE MONITORING ===== -->
+        <section class="content-section" id="section-monitoring">
+            <div class="monitoring-grid">
+                <div class="glass-card camera-feed-card">
+                    <div class="card-header">
+                        <h2>Camera Feed</h2>
+                        <div class="feed-controls">
+                            <span class="recording-indicator" id="recordingIndicator">
+                                <span class="rec-dot"></span> LIVE
+                            </span>
+                        </div>
+                    </div>
+                    <div class="camera-feed-container" id="cameraFeedContainer">
+                        <img src="/api/video_feed" id="liveVideoFeed" alt="Live Camera Feed" style="width: 100%; height: 100%; object-fit: contain; border-radius: 8px;">
+                        <canvas id="detectionOverlay" class="detection-overlay"></canvas>
+                    </div>
+                    <div class="feed-stats">
+                        <div class="feed-stat">
+                            <span class="feed-stat-label">Mode</span>
+                            <span class="feed-stat-value" id="feedMode">AI Mode</span>
+                        </div>
+                        <div class="feed-stat">
+                            <span class="feed-stat-label">Motion</span>
+                            <span class="feed-stat-value" id="feedMotion">Idle</span>
+                        </div>
+                        <div class="feed-stat">
+                            <span class="feed-stat-label">Persons</span>
+                            <span class="feed-stat-value" id="feedPersons">0</span>
+                        </div>
+                        <div class="feed-stat">
+                            <span class="feed-stat-label">Hazard</span>
+                            <span class="feed-stat-value" id="feedHazard">None</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detection Log -->
+                <div class="glass-card detection-log-card">
+                    <div class="card-header">
+                        <h2>Detection Log</h2>
+                        <button class="btn-ghost btn-sm" onclick="App.clearDetectionLog()">Clear</button>
+                    </div>
+                    <div class="detection-log" id="detectionLog">
+                        <div class="empty-state small">
+                            <p>Waiting for detections...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== SECTION: FACE ENROLLMENT ===== -->
+        <section class="content-section" id="section-enrollment">
+            <div class="enrollment-layout">
+                <!-- Enrollment Wizard -->
+                <div class="glass-card enrollment-wizard-card">
+                    <div class="card-header">
+                        <h2>Enroll New Person</h2>
+                        <span class="step-indicator" id="stepIndicator">Step 1 of 4</span>
+                    </div>
+
+                    <!-- Progress Steps -->
+                    <div class="wizard-progress">
+                        <div class="progress-step active" data-step="1">
+                            <div class="step-dot">1</div>
+                            <span class="step-label">Details</span>
+                        </div>
+                        <div class="progress-line"></div>
+                        <div class="progress-step" data-step="2">
+                            <div class="step-dot">2</div>
+                            <span class="step-label">Capture</span>
+                        </div>
+                        <div class="progress-line"></div>
+                        <div class="progress-step" data-step="3">
+                            <div class="step-dot">3</div>
+                            <span class="step-label">Review</span>
+                        </div>
+                        <div class="progress-line"></div>
+                        <div class="progress-step" data-step="4">
+                            <div class="step-dot">4</div>
+                            <span class="step-label">Confirm</span>
+                        </div>
+                    </div>
+
+                    <!-- Step 1: Person Details -->
+                    <div class="wizard-step active" id="wizardStep1">
+                        <div class="step-content">
+                            <h3>Person Information</h3>
+                            <p class="step-description">Enter the details of the person to enroll in the authorization database.</p>
+                            <div class="form-group">
+                                <label for="enrollName">Full Name <span class="required">*</span></label>
+                                <input type="text" id="enrollName" placeholder="e.g., John Smith" autocomplete="off">
+                            </div>
+                            <div class="form-group">
+                                <label for="enrollRole">Role / Department</label>
+                                <input type="text" id="enrollRole" placeholder="e.g., Security Staff">
+                            </div>
+                            <div class="form-group">
+                                <label for="enrollNotes">Notes</label>
+                                <textarea id="enrollNotes" rows="3" placeholder="Optional notes about this person..."></textarea>
+                            </div>
+                        </div>
+                        <div class="wizard-actions">
+                            <div></div>
+                            <button class="btn-primary" onclick="App.enrollment.nextStep()">
+                                Continue
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Photo Capture -->
+                    <div class="wizard-step" id="wizardStep2">
+                        <div class="step-content">
+                            <h3>Capture 5 Face Photos</h3>
+                            <p class="step-description">Take 5 photos from different angles for best recognition accuracy. Look directly at the camera, then slightly left, right, up, and down.</p>
+
+                            <div class="capture-layout">
+                                <div class="webcam-container">
+                                    <video id="enrollWebcam" autoplay playsinline muted></video>
+                                    <div class="webcam-overlay">
+                                        <div class="face-guide"></div>
+                                    </div>
+                                    <div class="webcam-status" id="webcamStatus">
+                                        <span class="webcam-status-dot"></span>
+                                        Camera Ready
+                                    </div>
+                                </div>
+
+                                <div class="capture-controls">
+                                    <div class="angle-guide" id="angleGuide">
+                                        <div class="angle-icon">
+                                            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                                <circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/>
+                                            </svg>
+                                        </div>
+                                        <span class="angle-text" id="angleText">Look straight at camera</span>
+                                        <span class="angle-count" id="angleCount">Photo 1 of 5</span>
+                                    </div>
+                                    <button class="capture-btn" id="captureBtn" onclick="App.enrollment.capturePhoto()">
+                                        <div class="capture-btn-inner">
+                                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/>
+                                            </svg>
+                                        </div>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Photo Slots -->
+                            <div class="photo-grid" id="photoGrid">
+                                <div class="photo-slot" data-slot="0">
+                                    <div class="photo-slot-inner">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg>
+                                        <span>Front</span>
+                                    </div>
+                                </div>
+                                <div class="photo-slot" data-slot="1">
+                                    <div class="photo-slot-inner">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg>
+                                        <span>Left</span>
+                                    </div>
+                                </div>
+                                <div class="photo-slot" data-slot="2">
+                                    <div class="photo-slot-inner">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg>
+                                        <span>Right</span>
+                                    </div>
+                                </div>
+                                <div class="photo-slot" data-slot="3">
+                                    <div class="photo-slot-inner">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg>
+                                        <span>Up</span>
+                                    </div>
+                                </div>
+                                <div class="photo-slot" data-slot="4">
+                                    <div class="photo-slot-inner">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg>
+                                        <span>Down</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="wizard-actions">
+                            <button class="btn-ghost" onclick="App.enrollment.prevStep()">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+                                Back
+                            </button>
+                            <button class="btn-primary" id="captureNextBtn" onclick="App.enrollment.nextStep()" disabled>
+                                Review Photos
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Review -->
+                    <div class="wizard-step" id="wizardStep3">
+                        <div class="step-content">
+                            <h3>Review Captured Photos</h3>
+                            <p class="step-description">Review the captured photos. You can retake any photo if needed.</p>
+                            <div class="review-grid" id="reviewGrid">
+                                <!-- Filled dynamically -->
+                            </div>
+                            <div class="review-summary" id="reviewSummary">
+                                <div class="review-stat">
+                                    <span class="review-stat-label">Photos Captured</span>
+                                    <span class="review-stat-value" id="reviewPhotoCount">5/5</span>
+                                </div>
+                                <div class="review-stat">
+                                    <span class="review-stat-label">Quality Check</span>
+                                    <span class="review-stat-value good" id="reviewQuality">Good</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="wizard-actions">
+                            <button class="btn-ghost" onclick="App.enrollment.prevStep()">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+                                Retake Photos
+                            </button>
+                            <button class="btn-primary" onclick="App.enrollment.nextStep()">
+                                Confirm & Enroll
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Step 4: Confirm & Submit -->
+                    <div class="wizard-step" id="wizardStep4">
+                        <div class="step-content enrollment-confirm">
+                            <div class="confirm-loading" id="enrollmentLoading">
+                                <div class="spinner large"></div>
+                                <h3>Enrolling Face...</h3>
+                                <p>Processing 5 photos and generating face embeddings. This may take a moment.</p>
+                            </div>
+                            <div class="confirm-success hidden" id="enrollmentSuccess">
+                                <div class="success-icon">
+                                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
+                                    </svg>
+                                </div>
+                                <h3>Successfully Enrolled!</h3>
+                                <p id="enrollmentSuccessName">Person has been added to the authorization database.</p>
+                                <button class="btn-primary" onclick="App.enrollment.reset()">Enroll Another Person</button>
+                            </div>
+                            <div class="confirm-error hidden" id="enrollmentError">
+                                <div class="error-icon">
+                                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/>
+                                    </svg>
+                                </div>
+                                <h3>Enrollment Failed</h3>
+                                <p id="enrollmentErrorMsg">An error occurred during enrollment.</p>
+                                <button class="btn-ghost" onclick="App.enrollment.prevStep()">Try Again</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Enrolled Persons Gallery -->
+                <div class="glass-card enrolled-gallery-card">
+                    <div class="card-header">
+                        <h2>Enrolled Persons</h2>
+                        <span class="badge" id="enrolledCountBadge">0</span>
+                    </div>
+                    <div class="enrolled-list" id="enrolledList">
+                        <div class="empty-state small">
+                            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                            </svg>
+                            <p>No persons enrolled</p>
+                            <span>Use the wizard to enroll authorized persons</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== SECTION: ALERTS & EVENTS ===== -->
+        <section class="content-section" id="section-alerts">
+            <div class="alerts-header">
+                <div class="filter-tabs">
+                    <button class="filter-tab active" data-filter="all">All Events</button>
+                    <button class="filter-tab" data-filter="person">Person</button>
+                    <button class="filter-tab" data-filter="hazard">Hazard</button>
+                    <button class="filter-tab" data-filter="unauthorized">Unauthorized</button>
+                    <button class="filter-tab" data-filter="motion">Motion</button>
+                </div>
+                <div class="alerts-actions">
+                    <button class="btn-ghost btn-sm" onclick="App.exportEvents()">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                        Export
+                    </button>
+                    <button class="btn-ghost btn-sm" onclick="App.clearEvents()">Clear All</button>
+                </div>
+            </div>
+            <div class="events-list" id="eventsList">
+                <div class="empty-state">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/>
+                    </svg>
+                    <p>No events to display</p>
+                    <span>Events from motion, person detection, and hazards will appear here</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== SECTION: CAMERAS ===== -->
+        <section class="content-section" id="section-cameras">
+            <div class="cameras-layout">
+                <div class="glass-card camera-config-card">
+                    <div class="card-header">
+                        <h2>Camera Configuration</h2>
+                    </div>
+                    <form id="cameraConfigForm" onsubmit="App.saveCameraConfig(event)">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="cfgCameraId">Camera ID</label>
+                                <input type="text" id="cfgCameraId" value="default_cam">
+                            </div>
+                            <div class="form-group">
+                                <label for="cfgSource">Video Source</label>
+                                <input type="text" id="cfgSource" value="0" placeholder="0, RTSP URL, or DroidCam URL">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="cfgSensitivity">Sensitivity</label>
+                                <select id="cfgSensitivity">
+                                    <option value="high_security">High Security (300px threshold)</option>
+                                    <option value="normal" selected>Normal (1500px threshold)</option>
+                                    <option value="low">Low (4000px threshold)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="toggle-label">
+                                    <span>Ignore Pets</span>
+                                    <div class="toggle-switch">
+                                        <input type="checkbox" id="cfgIgnorePets">
+                                        <span class="toggle-slider"></span>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="cfgCooldown">Cooldown (seconds)</label>
+                                <input type="number" id="cfgCooldown" value="2.5" step="0.5" min="0.5" max="30">
+                            </div>
+                            <div class="form-group">
+                                <label for="cfgMaxClip">Max Clip Length (seconds)</label>
+                                <input type="number" id="cfgMaxClip" value="45" min="5" max="300">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="cfgPreBuffer">Pre-Buffer (seconds)</label>
+                                <input type="number" id="cfgPreBuffer" value="1.5" step="0.5" min="0.5" max="10">
+                            </div>
+                            <div class="form-group">
+                                <label for="cfgRepWindow">Repetitive Motion Window (seconds)</label>
+                                <input type="number" id="cfgRepWindow" value="60" min="10" max="300">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="cfgRepMaxTriggers">Max Repetitive Triggers</label>
+                            <input type="number" id="cfgRepMaxTriggers" value="5" min="1" max="50">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Detection Zones (JSON)</label>
+                            <textarea id="cfgDetectionZones" rows="4" class="code-input" placeholder='[[[x1,y1],[x2,y2],[x3,y3],[x4,y4]]]'>[]</textarea>
+                            <span class="form-hint">Array of polygons. Each polygon is an array of [x,y] coordinate pairs.</span>
+                        </div>
+                        <div class="form-group">
+                            <label>Ignore Zones (JSON)</label>
+                            <textarea id="cfgIgnoreZones" rows="3" class="code-input" placeholder='[[[x1,y1],[x2,y2],[x3,y3],[x4,y4]]]'>[]</textarea>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" class="btn-ghost" onclick="App.loadCameraConfig()">Reset to Defaults</button>
+                            <button type="submit" class="btn-primary">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                                Save Configuration
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Sensitivity Presets Info -->
+                <div class="glass-card presets-card">
+                    <div class="card-header">
+                        <h2>Sensitivity Presets</h2>
+                    </div>
+                    <div class="presets-list">
+                        <div class="preset-item">
+                            <div class="preset-header">
+                                <span class="preset-name">High Security</span>
+                                <span class="badge danger">300px</span>
+                            </div>
+                            <p>Trips on very small movements. Best for restricted areas.</p>
+                        </div>
+                        <div class="preset-item active">
+                            <div class="preset-header">
+                                <span class="preset-name">Normal</span>
+                                <span class="badge cyan">1500px</span>
+                            </div>
+                            <p>Balanced sensitivity. Good for general monitoring.</p>
+                        </div>
+                        <div class="preset-item">
+                            <div class="preset-header">
+                                <span class="preset-name">Low</span>
+                                <span class="badge">4000px</span>
+                            </div>
+                            <p>Only triggers on large movements. Reduces false alarms.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== SECTION: SCHEDULE ===== -->
+        <section class="content-section" id="section-schedule">
+            <div class="schedule-layout">
+                <div class="glass-card schedule-card">
+                    <div class="card-header">
+                        <h2>AI Mode Schedule</h2>
+                        <span class="status-badge" id="currentModeScheduleBadge">AI Mode</span>
+                    </div>
+                    <p class="section-description">Define when the full AI pipeline (person detection, face recognition, hazard detection) is active. Outside these windows, the system runs in CCTV mode (motion recording only, no AI alerts).</p>
+
+                    <div class="schedule-timeline">
+                        <div class="timeline-bar">
+                            <div class="timeline-fill" id="scheduleTimelineFill" style="left: 0%; width: 100%;"></div>
+                            <div class="timeline-now" id="scheduleTimelineNow"></div>
+                        </div>
+                        <div class="timeline-labels">
+                            <span>00:00</span><span>06:00</span><span>12:00</span><span>18:00</span><span>23:59</span>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="schedAiStart">AI Mode Start</label>
+                            <input type="time" id="schedAiStart" value="00:00">
+                        </div>
+                        <div class="form-group">
+                            <label for="schedAiEnd">AI Mode End</label>
+                            <input type="time" id="schedAiEnd" value="23:59">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-card auth-schedule-card">
+                    <div class="card-header">
+                        <h2>Authorization Schedule</h2>
+                    </div>
+                    <p class="section-description">Define when the identity/face recognition pipeline is active. Outside these hours, any detected person is immediately treated as unauthorized (no face check needed).</p>
+
+                    <div class="form-group">
+                        <label>Active Days</label>
+                        <div class="day-toggles" id="authDayToggles">
+                            <button type="button" class="day-toggle active" data-day="Mon">Mon</button>
+                            <button type="button" class="day-toggle active" data-day="Tue">Tue</button>
+                            <button type="button" class="day-toggle active" data-day="Wed">Wed</button>
+                            <button type="button" class="day-toggle active" data-day="Thu">Thu</button>
+                            <button type="button" class="day-toggle active" data-day="Fri">Fri</button>
+                            <button type="button" class="day-toggle active" data-day="Sat">Sat</button>
+                            <button type="button" class="day-toggle active" data-day="Sun">Sun</button>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="authStart">Auth Window Start</label>
+                            <input type="time" id="authStart" value="00:00">
+                        </div>
+                        <div class="form-group">
+                            <label for="authEnd">Auth Window End</label>
+                            <input type="time" id="authEnd" value="23:59">
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn-ghost" onclick="App.resetSchedule()">Reset to Default</button>
+                        <button type="button" class="btn-primary" onclick="App.saveSchedule()">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                            Save Schedule
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Mode Info Cards -->
+                <div class="mode-info-grid">
+                    <div class="glass-card mode-card ai-mode">
+                        <div class="mode-icon">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                            </svg>
+                        </div>
+                        <h3>AI Mode</h3>
+                        <p>Full pipeline active: motion detection → person detection → face recognition → hazard detection → smart alerts</p>
+                    </div>
+                    <div class="glass-card mode-card cctv-mode">
+                        <div class="mode-icon">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/>
+                            </svg>
+                        </div>
+                        <h3>CCTV Mode</h3>
+                        <p>Passive recording only: motion-triggered clip saving. No AI processing, no alerts, no identity checks.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== SECTION: SETTINGS ===== -->
+        <section class="content-section" id="section-settings">
+            <div class="settings-layout">
+                <div class="glass-card">
+                    <div class="card-header">
+                        <h2>Detection Thresholds</h2>
+                    </div>
+                    <div class="form-group">
+                        <label for="settPersonThreshold">Person Detection Threshold</label>
+                        <div class="range-group">
+                            <input type="range" id="settPersonThreshold" min="0.1" max="0.9" step="0.05" value="0.4">
+                            <span class="range-value" id="settPersonThresholdVal">0.40</span>
+                        </div>
+                        <span class="form-hint">Min confidence to classify motion as a person (default: 0.40)</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="settMatchThreshold">Face Match Threshold</label>
+                        <div class="range-group">
+                            <input type="range" id="settMatchThreshold" min="0.2" max="0.8" step="0.05" value="0.45">
+                            <span class="range-value" id="settMatchThresholdVal">0.45</span>
+                        </div>
+                        <span class="form-hint">Cosine similarity threshold for face matching (default: 0.45). Lower = more permissive.</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="settHazardConfidence">Hazard Confidence Threshold</label>
+                        <div class="range-group">
+                            <input type="range" id="settHazardConfidence" min="0.1" max="0.8" step="0.05" value="0.2">
+                            <span class="range-value" id="settHazardConfidenceVal">0.20</span>
+                        </div>
+                        <span class="form-hint">Min confidence for fire/smoke detection (default: 0.20)</span>
+                    </div>
+                </div>
+
+                <div class="glass-card">
+                    <div class="card-header">
+                        <h2>Pipeline Settings</h2>
+                    </div>
+                    <div class="form-group">
+                        <label for="settHazardInterval">Hazard Check Interval (seconds)</label>
+                        <input type="number" id="settHazardInterval" value="2" min="1" max="60" step="1">
+                        <span class="form-hint">How often the hazard pipeline scans a frame (independent of motion)</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="settDarknessThreshold">Darkness Threshold</label>
+                        <div class="range-group">
+                            <input type="range" id="settDarknessThreshold" min="30" max="150" step="5" value="90">
+                            <span class="range-value" id="settDarknessThresholdVal">90</span>
+                        </div>
+                        <span class="form-hint">Mean V-channel value below which Zero-DCE++ enhancement activates (default: 90)</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="settMaxBboxFraction">Max Hazard BBox Fraction</label>
+                        <div class="range-group">
+                            <input type="range" id="settMaxBboxFraction" min="0.1" max="0.8" step="0.05" value="0.3">
+                            <span class="range-value" id="settMaxBboxFractionVal">0.30</span>
+                        </div>
+                        <span class="form-hint">Reject hazard detections covering more than this fraction of the frame (default: 0.30)</span>
+                    </div>
+                </div>
+
+                <div class="glass-card">
+                    <div class="card-header">
+                        <h2>Model Information</h2>
+                    </div>
+                    <div class="model-info-grid">
+                        <div class="model-item">
+                            <span class="model-name">YOLOv8n (Person)</span>
+                            <span class="model-file">yolov8n.pt</span>
+                            <span class="model-size">6.5 MB</span>
+                        </div>
+                        <div class="model-item">
+                            <span class="model-name">YOLOv8n (Fire/Smoke)</span>
+                            <span class="model-file">models/fire_yolov8n.pt</span>
+                            <span class="model-size">6.3 MB</span>
+                        </div>
+                        <div class="model-item">
+                            <span class="model-name">InsightFace (buffalo_l)</span>
+                            <span class="model-file">ArcFace w600k_r50</span>
+                            <span class="model-size">512-dim embeddings</span>
+                        </div>
+                        <div class="model-item">
+                            <span class="model-name">Zero-DCE++</span>
+                            <span class="model-file">models/zerodce_plusplus.pth</span>
+                            <span class="model-size">52 KB</span>
+                        </div>
+                        <div class="model-item">
+                            <span class="model-name">Light Classifier</span>
+                            <span class="model-file">models/light_classifier_hazard_only.pth</span>
+                            <span class="model-size">6.2 MB</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn-ghost" onclick="App.resetSettings()">Reset All to Defaults</button>
+                    <button type="button" class="btn-primary" onclick="App.saveSettings()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                        Save Settings
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ========== TOAST CONTAINER ========== -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- ========== MODAL ========== -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal" id="modal">
+            <button class="modal-close" id="modalClose">&times;</button>
+            <div class="modal-content" id="modalContent"></div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
